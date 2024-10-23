@@ -4,7 +4,7 @@ import express from "express";
 import dbConnect from './database/dbConfig.js';
 import cookieParser from 'cookie-parser';
 import authrouter from "./routes/auth.Router.js"
-
+import quoterouter from "./routes/quotesGenerator.route.js"
 
 const app = express();
 const port = process.env.PORT || 4000
@@ -17,10 +17,8 @@ app.use(cookieParser())
 dbConnect()
 
 
-
-
-
-app.use("/api/auth", authrouter)
+app.use("/api/v1/auth", authrouter)
+app.use("/api/v1/auth", quoterouter)
 
 
 app.use("/", (req, res) => {
