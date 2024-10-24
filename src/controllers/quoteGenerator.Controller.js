@@ -1,17 +1,30 @@
 import Quote from "../models/Quotes.model.js"
+import emailQueue from "../utils/bull.js"
+
+
 
 const quoteGenerator = async (req, res) => {
 
-    try {
-        const quotes = await Quote.find({})
 
-        if (quotes.length === 0) {
+    try {
+        const { email } = req.body
+
+        // const quotes = await Quote.find({})
+        const radomQuote = await Quote.aggregate([{ $sample: { size: 1 } }])
+
+        if (!radomQuote || radomQuote.length === 0) {
             return res.status(404).json({ message: "No quotes found." });
         }
 
-        const randomIndex = Math.floor(Math.random() * quotes.length)
-        const { quote, author } = quotes[randomIndex]
+
+        const { quote, author } = radomQuote[0]
+
         res.status(200).json({ quote, author });
+
+        // After sending the response, queue the email task asynchronously
+        await emailQueue.add({ email, quote, author });
+
+
 
     } catch (error) {
         console.error("Error fetching quotes: ", error);

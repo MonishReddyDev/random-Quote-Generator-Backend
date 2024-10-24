@@ -3,8 +3,11 @@ dotenv.config()
 import express from "express";
 import dbConnect from './database/dbConfig.js';
 import cookieParser from 'cookie-parser';
-import authrouter from "./routes/auth.Router.js"
-import quoterouter from "./routes/quotesGenerator.route.js"
+import authRouter from "./routes/auth.Router.js"
+import quoteRouter from "./routes/quotesGenerator.route.js"
+
+
+
 
 const app = express();
 const port = process.env.PORT || 4000
@@ -16,9 +19,8 @@ app.use(cookieParser())
 //connect to database
 dbConnect()
 
-
-app.use("/api/v1/auth", authrouter)
-app.use("/api/v1/auth", quoterouter)
+app.use("/api/v1/auth", authRouter); // For authentication (login, register, etc.)
+app.use("/api/v1/quotes", quoteRouter); // For quote-related endpoints (CRUD operations on quotes)
 
 
 app.use("/", (req, res) => {
