@@ -4,7 +4,7 @@ import bcrypt from "bcrypt"
 import jwt from "jsonwebtoken";
 import User from "../models/User.model.js"
 import { generateToken, hashPassword } from '../utils/helpers.js';
-
+import Client from "../redis/redisClient.js"
 
 export const register = async (req, res) => {
     try {
@@ -57,6 +57,10 @@ export const login = async (req, res) => {
 
         const { password: pwd, ...userData } = user._doc
 
+        // Store the user session in Redis
+        await Client.hset(`user:${user._id}`, 'email', user.email, 'loggedIn', true);
+
+        console.log(email, 'Logged in')
         res.cookie("token", token, { httpOnly: true, secure: true }).status(200).json(userData);
 
     } catch (error) {
@@ -74,6 +78,15 @@ export const logOut = async (req, res) => {
         if (!req.cookies.token) {
             return res.status(400).json({ message: "User is already logged out" });
         }
+
+        const token = req.cookies.token;
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+
+        // Remove the user session from Redis
+
+        await Client.del(`user:${decoded._id}`);
+
+
         res.clearCookie("token", { sameSite: "none", secure: true })
             .status(200)
             .json({ message: "User logged out successfully" });

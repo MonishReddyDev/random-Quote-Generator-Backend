@@ -5,7 +5,7 @@ import dbConnect from './database/dbConfig.js';
 import cookieParser from 'cookie-parser';
 import authRouter from "./routes/auth.Router.js"
 import quoteRouter from "./routes/quotesGenerator.route.js"
-
+import scheduleEmails from "./utils/SchedulesEmailJob.js"
 
 
 
@@ -15,12 +15,14 @@ app.use(express.json());
 app.use(cookieParser())
 
 
-
 //connect to database
 dbConnect()
 
+await scheduleEmails()
+
 app.use("/api/v1/auth", authRouter); // For authentication (login, register, etc.)
 app.use("/api/v1/quotes", quoteRouter); // For quote-related endpoints (CRUD operations on quotes)
+
 
 
 app.use("/", (req, res) => {

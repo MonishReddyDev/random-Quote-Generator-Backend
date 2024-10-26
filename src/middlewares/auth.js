@@ -16,6 +16,7 @@ const authMiddleware = async (req, res, next) => {
             }
 
             const decoded = jwt.verify(token, JWT_SECRET);
+
             req.user = decoded; // Attach the decoded user info to the request
 
             next(); // Proceed to the next middleware or route handler
