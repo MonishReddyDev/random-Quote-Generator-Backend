@@ -129,6 +129,8 @@ export const login = async (req, res, next) => {
 
         if (!isMatch) throw createError.Unauthorized("Invalid credentials!")
 
+        await Client.hset(`user:${user._id}`, 'email', user.email, 'loggedIn', true);
+
         const accessToken = await signAccessToken(user.id)
         const refreshToken = await signRefreshToken(user.id)
 
@@ -169,6 +171,8 @@ export const logOut = async (req, res) => {
         if (!refreshToken) throw createError.BadRequest()
 
         const userId = await verifyRefreshToken(refreshToken)
+        console.log(userId)
+        await Client.del(`user:${userId}`);
 
         redisClient.del(userId, (err, val) => {
             if (err) {

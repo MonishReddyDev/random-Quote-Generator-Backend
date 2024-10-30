@@ -22,7 +22,7 @@ app.use(cookieParser())
 //connect to database
 dbConnect()
 
-// await scheduleEmails()
+await scheduleEmails()
 
 app.get("/", verifAccessToken, async (req, res, next) => {
     res.send("Hello World form monish")
