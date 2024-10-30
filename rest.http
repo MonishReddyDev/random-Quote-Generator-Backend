@@ -1,0 +1,21 @@
+
+
+
+post http://localhost:3000/api/v1/auth/login
+Content-Type: application/json
+
+{
+    "username": "sai",
+    "email": "sai@gmail.com",
+    "password":"123123123",
+}
+
+
+
+post http://localhost:3000/api/v1/auth/refresh-token
+Content-Type: application/json
+
+
+{
+     "refreshToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE3MzAxNjc4NjEsImV4cCI6MTczMjc1OTg2MSwiYXVkIjoiNjcyMDM3NWFhNDg2NTg0ZDY0MjdmY2M0In0.Zky4octHSClNxYj3JtWztQ6BItkLpOtQKjOMXLdlVzM"
+}

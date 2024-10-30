@@ -3,7 +3,7 @@ import express from "express"
 const router = express.Router()
 import dotenv from 'dotenv';
 
-import { logOut, login, reFetchUser, register } from "../controllers/authController.js"
+import { logOut, login, reFetchUser, refreshToken, register } from "../controllers/authController.js"
 
 
 
@@ -24,6 +24,10 @@ router.post("/login", login)
 
 router.get("/logout", logOut)
 
+
+
+//refreshToken
+router.post('/refresh-token', refreshToken)
 
 
 //Fetch current user

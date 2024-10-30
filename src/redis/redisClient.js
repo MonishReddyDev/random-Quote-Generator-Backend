@@ -14,8 +14,22 @@ redisClient.on('connect', () => {
     console.log('Connected to Redis');
 });
 
+// Handle connection events
+redisClient.on('ready', () => {
+    console.log('Redis is ready to use...');
+});
+
 redisClient.on('error', (err) => {
     console.error('Redis error:', err);
 });
+
+
+redisClient.on('end', (err) => {
+    console.error('client disconnected from redis');
+});
+
+process.on('SIGINT', () => {
+    redisClient.quit()
+})
 
 export default redisClient;
