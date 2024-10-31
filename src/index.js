@@ -24,7 +24,7 @@ dbConnect()
 
 await scheduleEmails()
 
-app.get("/", verifAccessToken, async (req, res, next) => {
+app.get("/", async (req, res, next) => {
     res.send("Hello World form monish")
     next()
 })
