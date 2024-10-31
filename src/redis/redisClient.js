@@ -1,12 +1,12 @@
 // redisClient.js
 import Redis from 'ioredis';
 
-// Create a new Redis client
+// Create a new Redis client for AWS ElastiCache
 const redisClient = new Redis({
-    host: '127.0.0.1',  // Redis server host
-    port: 6379,          // Redis server port
-    // password: 'your_password', // Uncomment if your Redis server requires a password
-    // db: 0,               // Default database index (optional)
+    host: 'master.my-redis.mct9gx.use1.cache.amazonaws.com', // Your ElastiCache primary endpoint
+    port: 6379,                                               // Redis server port
+    password: 'f3a9b7c2d4e5a1b8',                           // Your Redis password
+    tls: {}                                                  // Enable TLS for secure connection
 });
 
 // Handle connection events
@@ -14,22 +14,24 @@ redisClient.on('connect', () => {
     console.log('Connected to Redis');
 });
 
-// Handle connection events
+// Handle readiness event
 redisClient.on('ready', () => {
     console.log('Redis is ready to use...');
 });
 
+// Handle errors
 redisClient.on('error', (err) => {
     console.error('Redis error:', err);
 });
 
-
-redisClient.on('end', (err) => {
-    console.error('client disconnected from redis');
+// Handle disconnection event
+redisClient.on('end', () => {
+    console.error('Client disconnected from Redis');
 });
 
+// Graceful shutdown on SIGINT
 process.on('SIGINT', () => {
-    redisClient.quit()
-})
+    redisClient.quit();
+});
 
 export default redisClient;
