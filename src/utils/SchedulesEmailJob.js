@@ -1,45 +1,49 @@
 import { scheduleJob } from 'node-schedule';
-import Client from "../redis/redisClient.js";
 import Quote from '../models/Quotes.model.js';
 import sendQuoteEmail from './email.js';
+import User from '../models/User.model.js';
 
 const scheduleEmails = async () => {
+
     scheduleJob('*/2 * * * *', async () => {
-        console.log("Starting email sending process...");
+        try {
+            console.log("Starting email sending process...");
+            const users = await User.find({ isLoggedIn: true }).select('email');
 
-        const keys = await Client.keys('user:*');
-        console.log(`Found users: ${keys}`);
+            // Fetch random quotes in parallel for all users
+            const emailPromises = users.map(async (user) => {
 
-        for (const key of keys) {
+                const { email } = user
+                // Fetch a random quote
+                const randomQuote = await Quote.aggregate([{ $sample: { size: 1 } }]);
+                // If a random quote is found, send the email
+                if (randomQuote.length > 0) {
+                    const { quote, author } = randomQuote[0];
+                    const emailSent = await sendQuoteEmail(email, `${quote} - ${author}`);
 
-            try {
-
-                const userData = await Client.hgetall(key);
-                const email = userData.email;
-                const loggedIn = userData.loggedIn; // Adjust as necessary
-
-                // Proceed only if the user is logged in
-                if (loggedIn === 'true') {
-                    // Fetch a random quote
-                    const randomQuote = await Quote.aggregate([{ $sample: { size: 1 } }]);
-
-                    // Send email
-                    if (randomQuote.length > 0) {
-                        const { quote, author } = randomQuote[0];
-                        await sendQuoteEmail(email, `${quote} - ${author}`);
+                    if (emailSent) {
                         console.log(`Email sent to ${email}`);
                     } else {
-                        console.log("No quote found to send.");
+                        console.log(`Failed to send email to ${email}`);
                     }
                 } else {
-                    console.log(`Skipping email for ${email} (key: ${key}): user not logged in.`);
+                    console.log("No quote found to send.");
                 }
-            } catch (error) {
-                console.error(`Error processing key ${key}:`, error);
-            }
+
+            })
+
+            // Wait for all emails to be sent
+            await Promise.all(emailPromises);
+
+            console.log("Email sending process completed.");
+
+
+        } catch (error) {
+
+            console.error("Error processing users:", error);
         }
 
-        console.log("Email sending process completed.");
+
     });
 };
 

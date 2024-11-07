@@ -20,6 +20,14 @@ const userSchema = new Schema({
     password: {
         type: String,
         required: true
+    },
+    lastLogin: {
+        type: Date,
+        default: Date.now
+    },
+    isLoggedIn: {
+        type: Boolean,
+        default: false
     }
 
 }, { timestamps: true })
@@ -27,17 +35,17 @@ const userSchema = new Schema({
 
 userSchema.pre('save', async function (next) {
     try {
-        const salt = await bcrypt.genSalt(10)
-        const hashPassword = await bcrypt.hash(this.password, salt)
-        this.password = hashPassword
-        next()
-
+        // Hash the password only if it's modified (or if it's a new document)
+        if (this.isModified('password')) {
+            const salt = await bcrypt.genSalt(10);
+            const hashPassword = await bcrypt.hash(this.password, salt);
+            this.password = hashPassword;
+        }
+        next();
     } catch (error) {
-        next(error)
+        next(error);
     }
-
-})
-
+});
 
 userSchema.methods.isValidpassword = async function (password) {
     try {

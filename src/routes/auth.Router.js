@@ -3,7 +3,8 @@ import express from "express"
 const router = express.Router()
 import dotenv from 'dotenv';
 
-import { logOut, login, reFetchUser, refreshToken, register } from "../controllers/authController.js"
+import { logOut, login, register, refreshToken } from "../controllers/authController.js"
+import authMiddleware from "../middlewares/auth.js";
 
 
 
@@ -29,9 +30,6 @@ router.get("/logout", logOut)
 //refreshToken
 router.post('/refresh-token', refreshToken)
 
-
-//Fetch current user
-router.get("/reFetch", reFetchUser);
 
 
 export default router
