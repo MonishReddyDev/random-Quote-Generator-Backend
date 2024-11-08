@@ -131,7 +131,7 @@ export const logOut = async (req, res) => {
             return res.status(404).json({ message: "User not found" });
         }
 
-        res.status(204).send("User logged out successfully");
+        res.status(200).json({ message: "User loggedout" });
 
     } catch (error) {
         console.error("Logout error: ", error);

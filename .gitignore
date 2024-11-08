@@ -32,6 +32,10 @@ coverage
 # Bower dependency directory (https://bower.io/)
 bower_components
 
+
+# Serverless deployment folder (if applicable)
+.serverless/
+
 # node-waf configuration
 .lock-wscript
 

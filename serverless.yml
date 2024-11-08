@@ -1,0 +1,24 @@
+# "org" ensures this Service is used with the correct Serverless Framework Access Key.
+org: monishpvt
+# "service" is the name of this project. This will also be added to your AWS resource names.
+service: randomQuoteGenrator-HTTP
+frameworkVersion: "4"
+
+provider:
+  name: aws
+  runtime: nodejs20.x
+  region: us-east-1
+
+functions:
+  randomQuoteGenratorApis:
+    handler: src/index.handler
+    events:
+      - httpApi:
+          path: /
+          method: GET
+      - httpApi:
+          path: /api/v1/auth/{proxy+}
+          method: ANY
+      - httpApi:
+          path: /api/v1/quotes
+          method: GET

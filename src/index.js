@@ -9,6 +9,7 @@ import scheduleEmails from "./utils/SchedulesEmailJob.js"
 import createError from 'http-errors';
 import morgan from 'morgan';
 import { verifAccessToken } from './helpers/jwt_helper.js';
+import serverless from 'serverless-http';
 
 
 
@@ -52,12 +53,11 @@ app.use((err, req, res, next) => {
 })
 
 
+// app.listen(port, () => {
+//     console.log(`Server is running on port ${port}`)
+// })
 
 
 
-
-
-
-app.listen(port, () => {
-    console.log(`Server is running on port ${port}`)
-})
+// Wrap Express app with serverless-http
+export const handler = serverless(app);

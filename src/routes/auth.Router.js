@@ -7,7 +7,6 @@ import { logOut, login, register, refreshToken } from "../controllers/authContro
 import authMiddleware from "../middlewares/auth.js";
 
 
-
 // Load environment variables from .env file
 dotenv.config();
 
