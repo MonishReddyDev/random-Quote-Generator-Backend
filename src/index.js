@@ -27,7 +27,6 @@ await scheduleEmails()
 
 app.get("/api/test", async (req, res, next) => {
     res.send("Hello World form monish")
-    next()
 })
 
 app.use("/api/v1/auth", authRouter); // For authentication (login, register, etc.)
