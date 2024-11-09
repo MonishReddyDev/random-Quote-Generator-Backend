@@ -5,11 +5,11 @@ import dbConnect from './database/dbConfig.js';
 import cookieParser from 'cookie-parser';
 import authRouter from "./routes/auth.Router.js"
 import quoteRouter from "./routes/quotesGenerator.route.js"
-import scheduleEmails from "./utils/SchedulesEmailJob.js"
+import { scheduleEmails } from "./utils/SchedulesEmailJob.js"
 import createError from 'http-errors';
 import morgan from 'morgan';
 import { verifAccessToken } from './helpers/jwt_helper.js';
-import serverless from 'serverless-http';
+// import serverless from 'serverless-http';
 
 
 
@@ -53,11 +53,11 @@ app.use((err, req, res, next) => {
 })
 
 
-// app.listen(port, () => {
-//     console.log(`Server is running on port ${port}`)
-// })
+app.listen(port, () => {
+    console.log(`Server is running on port ${port}`)
+})
 
 
 
-// Wrap Express app with serverless-http
-export const handler = serverless(app);
+// // Wrap Express app with serverless-http
+// export const handler = serverless(app);

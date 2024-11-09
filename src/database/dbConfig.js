@@ -12,6 +12,7 @@ const dbConnect = async () => {
     try {
 
         const connection = await mongoose.connect(monogurl, { dbName: "Quotes" })
+
         console.log("Database connnection successfull")
 
 

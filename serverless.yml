@@ -1,13 +1,20 @@
 # "org" ensures this Service is used with the correct Serverless Framework Access Key.
 org: monishpvt
 # "service" is the name of this project. This will also be added to your AWS resource names.
-service: randomQuoteGenrator-HTTP
-frameworkVersion: "4"
+service: quotegenapis
 
 provider:
   name: aws
   runtime: nodejs20.x
-  region: us-east-1
+  environment:
+    PORT: ${env:PORT}
+    MONGO_DB_URL: ${env:MONGO_DB_URL}
+    JWT_SECRET: ${env:JWT_SECRET}
+    JWT_EXPIRATION: ${env:JWT_EXPIRATION}
+    EMAIL_USER: ${env:EMAIL_USER}
+    EMAIL_PASS: ${env:EMAIL_PASS}
+    ACCESS_TOKEN_SECRET: ${env:ACCESS_TOKEN_SECRET}
+    REFRESH_TOKEN_SECRET: ${env:REFRESH_TOKEN_SECRET}
 
 functions:
   randomQuoteGenratorApis:
@@ -22,3 +29,9 @@ functions:
       - httpApi:
           path: /api/v1/quotes
           method: GET
+
+  test:
+    handler: src/utils/test.handler
+    events:
+      - eventBridge:
+          schedule: rate(2 minutes)
